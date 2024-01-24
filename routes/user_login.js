@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt')
 const af=require('../functions/functions')
+const path=require('path')
 router.post('/login', async (req, res) => {
     try {
         // const salt =await bcrypt.genSalt(10)
@@ -19,6 +20,15 @@ router.post('/login', async (req, res) => {
             token:''
         }
     }
+})
+
+router.get('/loadwebimages/:imagename',async(req,res)=>{
+try {
+    const file=path.join(__dirname,`../assets/${req.params.imagename}`)
+    return res.sendFile(file)
+} catch (error) {
+    console.log(error);
+}
 })
 
 module.exports = router 
