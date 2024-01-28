@@ -78,53 +78,18 @@ const adminFunctions = {
             return { msg: error.message, success: false }
         }
     },
-    uploadGalleryImage: async (files) => {
+    uploadGalleryImage: async (file) => {
         try {
-            if (files !== undefined || files !== null) {
-                if (files.length === 3) {
-                    const file0 = files[0].originalname.split('-')[0]
-                    const r1 = await adminFunctions.uploadToServer(files[0], file0)
-                    const file1 = files[1].originalname.split('-')[0]
-                    const r2 = await adminFunctions.uploadToServer(files[1], file1)
-                    const file2 = files[2].originalname.split('-')[0]
-                    const r3 = await adminFunctions.uploadToServer(files[2], file2)
-                    if (r1.success === true || r2.success === true || r3.success == true) {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    } else {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    }
-                }
-                if (files.length === 2) {
-                    const file0 = files[0].originalname.split('-')[0]
-                    const r1 = await adminFunctions.uploadToServer(files[0], file0)
-                    const file1 = files[1].originalname.split('-')[0]
-                    const r2 = await adminFunctions.uploadToServer(files[1], file1)
-                    if (r1.success === true || r2.success === true) {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    } else {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    }
-                }
-                if (files.length === 1) {
-                    const file0 = files[0].originalname.split('-')[0]
-                    const r1 = await adminFunctions.uploadToServer(files[0], file0)
-                    if (r1.success === true) {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    } else {
-                        return {
-                            msg: 'file uploaded', success: true
-                        }
-                    }
+            console.log(file);
+            if (file !== undefined || file !== null) {
+                const roomtype = file.originalname.split('-')[0]
+                console.log(roomtype);
+                const image = await adminFunctions.uploadToServer(file, roomtype)
+                if (image.success == true) {
+                    return { success: true, msg: 'upload successfull' }
+                } else {
+                    return { success: false, msg: 'upload failed' }
+
                 }
             } else {
                 return { success: false, msg: 'upload failed' }
@@ -134,14 +99,14 @@ const adminFunctions = {
             return { success: false, msg: 'upload failed' }
         }
     },
-    uploadToServer: async (file, pos) => {
+    uploadToServer: async (file, roomtype) => {
         try {
             const data = await fs.rename(`gallery/${file.filename}`, `gallery/${file.filename}.jpeg`)
             const files = await fs.open(`gallery/${file.filename}.jpeg`)
             if (files.fd !== undefined) {
                 const md = new image({
                     imageName: file.filename,
-                    imagePos: pos
+                    roomtype: roomtype
                 })
                 const smd = await md.save()
                 console.log(smd);
@@ -160,34 +125,37 @@ const adminFunctions = {
             return { success: false, msg: 'upload failed' }
         }
     },
-    loadImagesfromServer: async () => {
+    loadImagesfromServer: async (imageType) => {
         try {
-            const data = await images.find()
-            var leftImage = []
-            var rightImage = []
+            const data = await images.find({ roomtype: imageType})
+            var rooms = []
             await Promise.all(data.map((e) => {
-                console.log(e.imagePos);
-                if (e.imagePos ===':L') {
-                    leftImage.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                } else if(e.imagePos==='R') {
-                    rightImage.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                }
+                rooms.push({ imageUrl: `http://192.168.43.46:2000/api/loadImages/${e.imageName}` })
+                // rooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // console.log(e.imagePos);
+                // if (e.roomType === 'Suite Rooms') {
+                //     suiteRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // } else if (e.roomType === 'Premium Rooms') {
+                //     premiumRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // } else if (e.roomType === "Pool View Rooms") {
+                //     poolViewRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // } else {
+                //     activity.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // }
             }))
-            console.log(leftImage)
-            console.log(rightImage)
+            // console.log(leftImage)
+            // console.log(rightImage)
             return {
-                leftImage:leftImage,
-                rightImage:rightImage,
-                success:true,
-                msg:'fetch'
+                data:rooms,
+                success: true,
+                msg: 'fetch'
             }
         } catch (error) {
             console.log(error);
             return {
-                leftImage:[],
-                rightImage:[],
-                success:false,
-                msg:error.messge
+                data:[],
+                success: false,
+                msg: error.messge
             }
         }
     }

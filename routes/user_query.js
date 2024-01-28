@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const adminFunctions = require('../functions/functions');
 const queryModel = require('../models/user_query')
-const path=require('path')
+const path = require('path')
 router.post('/postqueries', async (req, res) => {
     try {
         console.log(req.body);
@@ -27,17 +27,18 @@ router.get('/postedqueries', async (req, res) => {
     }
 })
 
-router.get('/loadimage',async(req,res)=>{
+router.post('/loadimage', async (req, res) => {
     try {
-        const data=await adminFunctions.loadImagesfromServer()
+        console.log(req.body);
+        const data = await adminFunctions.loadImagesfromServer(req.body.imageType)
+        console.log(data);
         return res.json(data)
     } catch (error) {
         console.log(error);
         return res.json({
-            success:false,
-            msg:error.message,
-            leftImage:[],
-            rightImage:[]
+            success: false,
+            msg: error.message,
+            data: []
         })
     }
 })
@@ -45,9 +46,9 @@ router.get('/loadimage',async(req,res)=>{
 router.get('/loadImages/:imageName', async (req, res) => {
     try {
         console.log(__dirname);
-        return res.sendFile(path.join(__dirname,`../gallery/${req.params.imageName}.jpeg`))
+        return res.sendFile(path.join(__dirname, `../gallery/${req.params.imageName}.jpeg`))
     } catch (error) {
         console.log(error);
     }
-})  
+})
 module.exports = router

@@ -30,5 +30,13 @@ try {
     console.log(error);
 }
 })
+router.get('/loadVideo',async(req,res)=>{
+try {
+    const file=path.join(__dirname,`../assets/ns.mp4`)
+    return res.sendFile(file)
+} catch (error) {
+    console.log(error);
+}
+})
 
 module.exports = router 
