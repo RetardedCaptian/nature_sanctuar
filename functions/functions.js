@@ -130,7 +130,7 @@ const adminFunctions = {
             const data = await images.find({ roomtype: imageType})
             var rooms = []
             await Promise.all(data.map((e) => {
-                rooms.push({ imageUrl: `https://nature-sanctuary.onrender.comapi/loadImages/${e.imageName}` })
+                rooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
                 // rooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
                 // console.log(e.imagePos);
                 // if (e.roomType === 'Suite Rooms') {
