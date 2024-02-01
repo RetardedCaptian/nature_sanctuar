@@ -17,7 +17,7 @@ router.post('/sendemail', async (req, res) => {
 
         const mailOptions = {
             // from: 'shijinjose333@gmail.com',
-            to: 'ronroy579@gmail.com',
+            to: 'shijinjose1999@gmail.com',
             subject: req.body.querySubject,
             text: `Hello Im ${req.body.queryUsername},${req.body.queryMessage}\nplease contact me on ${req.body.queryContact}`,
         };
