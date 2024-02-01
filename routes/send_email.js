@@ -24,6 +24,7 @@ router.post('/sendemail', async (req, res) => {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
+                console.log(error)
                 return res.json({ success: false, msg: 'unsuccessfull' })
             } else {
                 return res.json({ success: true, msg: 'posted' })
