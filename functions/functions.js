@@ -133,7 +133,8 @@ const adminFunctions = {
             await Promise.all(data.map((e) => {
                 // console.log(e);
                 // rooms.push({ imageUrl: `https://naturesanctuary.in/api/loadImages/${e.imageName}` })
-                rooms.push({ _id: e._id, imageUrl: `http://192.168.43.46:2000/api/loadImages/${e.imageName}` })
+                rooms.push({ _id: e._id, imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
+                // rooms.push({ _id: e._id, imageUrl: `http://192.168.43.46:2000/api/loadImages/${e.imageName}` })
             }))
             return {
                 data: rooms,
