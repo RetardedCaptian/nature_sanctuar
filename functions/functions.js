@@ -6,6 +6,7 @@ const fs = require('fs/promises')
 const images = require('../models/image')
 const image = require('../models/image')
 const { log } = require('console')
+const path = require('path')
 const adminFunctions = {
     getIdFromToken: async function (req, res, next) {
         try {
@@ -127,36 +128,50 @@ const adminFunctions = {
     },
     loadImagesfromServer: async (imageType) => {
         try {
-            const data = await images.find({ roomtype: imageType})
+            const data = await images.find({ roomtype: imageType })
             var rooms = []
             await Promise.all(data.map((e) => {
-                rooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // rooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // console.log(e.imagePos);
-                // if (e.roomType === 'Suite Rooms') {
-                //     suiteRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // } else if (e.roomType === 'Premium Rooms') {
-                //     premiumRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // } else if (e.roomType === "Pool View Rooms") {
-                //     poolViewRooms.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // } else {
-                //     activity.push({ imageUrl: `https://nature-sanctuary.onrender.com/api/loadImages/${e.imageName}` })
-                // }
+                // console.log(e);
+                // rooms.push({ imageUrl: `https://naturesanctuary.in/api/loadImages/${e.imageName}` })
+                rooms.push({ _id: e._id, imageUrl: `http://192.168.43.46:2000/api/loadImages/${e.imageName}` })
             }))
-            // console.log(leftImage)
-            // console.log(rightImage)
             return {
-                data:rooms,
+                data: rooms,
                 success: true,
                 msg: 'fetch'
             }
         } catch (error) {
             console.log(error);
             return {
-                data:[],
+                data: [],
                 success: false,
                 msg: error.messge
             }
+        }
+    },
+    deleteImages:async(id)=>{
+        try {
+            const image=await images.find({_id:id});
+            const data=await images.deleteOne({ _id: id})
+            const imagedelted=await adminFunctions.deleteImageFromServer(image[0].imageName)
+            if(data.deletedCount===1){
+                return {success:true,msg:"deleted"}
+            }
+            else{
+                return {success:false,msg:"not deleted"}
+
+            }
+        } catch (error) {
+            console.log(error);
+            return {success:false,msg:"not deleted"}
+
+        }
+    },
+    deleteImageFromServer:async(filename)=>{
+        try {
+            const file=await fs.unlink(path.join(__dirname,`../gallery/${filename}.jpeg`))
+        } catch (error) {
+            console.log(error);
         }
     }
 }

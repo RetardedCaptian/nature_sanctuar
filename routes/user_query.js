@@ -51,4 +51,15 @@ router.get('/loadImages/:imageName', async (req, res) => {
         console.log(error);
     }
 })
+router.delete('/deleteimage/:id', async (req, res) => {
+    try {
+        const data=await adminFunctions.deleteImages(req.params.id)
+        console.log(data);
+        return res.json(data)
+    } catch (error) {
+        console.log(error);
+        return {success:false,msg:"not deleted"}
+
+    }
+})
 module.exports = router
